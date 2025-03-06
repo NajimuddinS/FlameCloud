@@ -1,6 +1,6 @@
 const express=require('express');
-const app=express()
-const dotenv=require('dotenv')
+const app=express();
+const dotenv=require('dotenv');
 const cors=require('cors')
 const recipeRoutes = require('./routes/recipe.route.js');
 const logger = require('./middleware/logger.middleware.js');

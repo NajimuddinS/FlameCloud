@@ -1,20 +1,6 @@
 const axios = require('axios');
 const Recipe = require('../models/recipe.model.js');
-const fetchAndStoreRecipes = async () => {
-  try {
-    const response = await axios.get('https://dummyjson.com/recipes');
-    const recipes = response.data.recipes;
 
-    // Insert recipes into MongoDB
-    await Recipe.insertMany(recipes);
-    console.log('Recipes fetched and stored successfully');
-  } catch (err) {
-    console.error('Error fetching or storing recipes:', err);
-  }
-};
-
-// Call the function to fetch and store recipes
-fetchAndStoreRecipes();
 
 // Get all recipes
 const getAllRecipes = async (req, res) => {
