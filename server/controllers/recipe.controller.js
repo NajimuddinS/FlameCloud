@@ -1,7 +1,6 @@
 const axios = require('axios');
 const Recipe = require('../models/recipe.model.js');
 
-
 // Get all recipes
 const getAllRecipes = async (req, res) => {
   try {

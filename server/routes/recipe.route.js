@@ -12,4 +12,4 @@ router.post('/', addRecipe);
 // PUT update a recipe
 router.put('/:id', updateRecipe);
 
-module.exports = router;
+module.exports=router;
