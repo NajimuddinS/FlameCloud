@@ -5,7 +5,7 @@ const cors=require('cors')
 const recipeRoutes = require('./routes/recipe.route.js');
 const logger = require('./middleware/logger.middleware.js');
 
-const connectDB=require('./config/db')
+const connectDB=require('./config/db.js')
 dotenv.config();
 const port=process.env.PORT
 
