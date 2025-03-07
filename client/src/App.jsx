@@ -62,6 +62,31 @@ function App() {
     setRecipes(updatedRecipes);
   };
 
+  const handleUpdateRecipe = async (updatedRecipe) => {
+    try {
+      const response = await fetch(`https://flamecloud-9750.onrender.com/api/recipes/${updatedRecipe._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedRecipe),
+      });
+      const data = await response.json();
+
+      // Update the recipe in the state
+      setRecipes((prevRecipes) =>
+        prevRecipes.map((recipe) =>
+          recipe._id === data._id ? data : recipe
+        )
+      );
+
+      // Close the details modal or reset the selected recipe
+      setSelectedRecipe(null);
+    } catch (error) {
+      console.error('Error updating recipe:', error);
+    }
+  };
+
   const indexOfLastRecipe = currentPage * recipesPerPage;
   const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
   const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
@@ -98,6 +123,7 @@ function App() {
           <RecipeDetails 
             recipe={selectedRecipe}
             onClose={() => setSelectedRecipe(null)}
+            onUpdateRecipe={handleUpdateRecipe}
           />
         )}
       </div>

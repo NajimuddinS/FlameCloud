@@ -1,51 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-function RecipeDetails({ recipe, onClose }) {
+function RecipeDetails({ recipe, onClose, onUpdateRecipe }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedRecipe, setEditedRecipe] = useState({ ...recipe });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedRecipe({
+      ...editedRecipe,
+      [name]: value,
+    });
+  };
+
+  const handleArrayChange = (e, index, field) => {
+    const newArray = [...editedRecipe[field]];
+    newArray[index] = e.target.value;
+    setEditedRecipe({
+      ...editedRecipe,
+      [field]: newArray,
+    });
+  };
+
+  const handleSave = async () => {
+    await onUpdateRecipe(editedRecipe);
+    setIsEditing(false);
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal recipe-details" onClick={e => e.stopPropagation()}>
-        <img src={recipe.image} alt={recipe.name} />
-        <h2>{recipe.name}</h2>
-
-        <div className="recipe-details-info">
-          <div>
-            <strong>Cuisine:</strong> {recipe.cuisine}
-          </div>
-          <div>
-            <strong>Difficulty:</strong> {recipe.difficulty}
-          </div>
-          <div>
-            <strong>Prep Time:</strong> {recipe.prepTimeMinutes} mins
-          </div>
-          <div>
-            <strong>Cook Time:</strong> {recipe.cookTimeMinutes} mins
-          </div>
-          <div>
-            <strong>Servings:</strong> {recipe.servings}
-          </div>
-        </div>
-
-        <div className="recipe-details-section">
-          <h3>Ingredients</h3>
-          <ul>
-            {recipe.ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="recipe-details-section">
-          <h3>Instructions</h3>
-          <ol>
-            {recipe.instructions.map((instruction, index) => (
-              <li key={index}>{instruction}</li>
-            ))}
-          </ol>
-        </div>
-
-        <button className="button primary-button" onClick={onClose}>
-          Close
-        </button>
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              name="name"
+              value={editedRecipe.name}
+              onChange={handleInputChange}
+            />
+            {/* Add other input fields for editing */}
+            <button className="button primary-button" onClick={handleSave}>
+              Save
+            </button>
+            <button className="button secondary-button" onClick={() => setIsEditing(false)}>
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <img src={recipe.image} alt={recipe.name} />
+            <h2>{recipe.name}</h2>
+            {/* Display recipe details */}
+            <button className="button primary-button" onClick={onClose}>
+              Close
+            </button>
+            <button className="button edit-button" onClick={() => setIsEditing(true)}>
+              Edit
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

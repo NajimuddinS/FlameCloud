@@ -13,10 +13,8 @@ const fetchAndStoreRecipes = async () => {
   }
 };
 
-// Call the function to fetch and store recipes
 fetchAndStoreRecipes();
 
-// Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find();
