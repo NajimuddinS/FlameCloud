@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DragDropContext } from '@hello-pangea/dnd';
 import RecipeList from './components/RecipeList';
 import RecipeForm from './components/RecipeForm';
 import RecipeDetails from './components/RecipeDetails';
@@ -50,44 +51,57 @@ function App() {
     setSelectedRecipe(recipes[randomIndex]);
   };
 
+  const handleDragEnd = (result) => {
+    if (!result.destination) return; // If dropped outside the list, do nothing
+
+    // Reorder the recipes
+    const updatedRecipes = Array.from(recipes);
+    const [reorderedRecipe] = updatedRecipes.splice(result.source.index, 1);
+    updatedRecipes.splice(result.destination.index, 0, reorderedRecipe);
+
+    setRecipes(updatedRecipes);
+  };
+
   const indexOfLastRecipe = currentPage * recipesPerPage;
   const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
   const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
 
   return (
-    <div>
-      <Header 
-        onAddRecipe={() => setShowForm(true)} 
-        onSurpriseMe={handleSurpriseMe}
-      />
-      
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>Loading recipes...</div>
-      ) : (
-        <RecipeList 
-          recipes={currentRecipes}
-          onRecipeClick={setSelectedRecipe}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalRecipes={recipes.length}
-          recipesPerPage={recipesPerPage}
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <div>
+        <Header 
+          onAddRecipe={() => setShowForm(true)} 
+          onSurpriseMe={handleSurpriseMe}
         />
-      )}
+        
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading recipes...</div>
+        ) : (
+          <RecipeList 
+            recipes={currentRecipes}
+            onRecipeClick={setSelectedRecipe}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalRecipes={recipes.length}
+            recipesPerPage={recipesPerPage}
+          />
+        )}
 
-      {showForm && (
-        <RecipeForm 
-          onSubmit={handleAddRecipe}
-          onClose={() => setShowForm(false)}
-        />
-      )}
+        {showForm && (
+          <RecipeForm 
+            onSubmit={handleAddRecipe}
+            onClose={() => setShowForm(false)}
+          />
+        )}
 
-      {selectedRecipe && (
-        <RecipeDetails 
-          recipe={selectedRecipe}
-          onClose={() => setSelectedRecipe(null)}
-        />
-      )}
-    </div>
+        {selectedRecipe && (
+          <RecipeDetails 
+            recipe={selectedRecipe}
+            onClose={() => setSelectedRecipe(null)}
+          />
+        )}
+      </div>
+    </DragDropContext>
   );
 }
 

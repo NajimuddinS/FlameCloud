@@ -1,4 +1,5 @@
 import React from 'react';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 
 function RecipeList({ 
   recipes, 
@@ -12,25 +13,44 @@ function RecipeList({
 
   return (
     <div>
-      <div className="recipe-grid">
-        {recipes.map((recipe) => (
+      <Droppable droppableId="recipes">
+        {(provided) => (
           <div 
-            key={recipe._id} 
-            className="recipe-card"
-            onClick={() => onRecipeClick(recipe)}
+            className="recipe-grid" 
+            ref={provided.innerRef} 
+            {...provided.droppableProps}
           >
-            <img src={recipe.image} alt={recipe.name} />
-            <div className="recipe-card-content">
-              <h3>{recipe.name}</h3>
-              <div className="recipe-info">
-                <span>{recipe.cuisine}</span>
-                <span>{recipe.difficulty}</span>
-                <span>{recipe.prepTimeMinutes + recipe.cookTimeMinutes} mins</span>
-              </div>
-            </div>
+            {recipes.map((recipe, index) => (
+              <Draggable 
+                key={recipe._id} 
+                draggableId={recipe._id} 
+                index={index}
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className="recipe-card"
+                    onClick={() => onRecipeClick(recipe)}
+                  >
+                    <img src={recipe.image} alt={recipe.name} />
+                    <div className="recipe-card-content">
+                      <h3>{recipe.name}</h3>
+                      <div className="recipe-info">
+                        <span>{recipe.cuisine}</span>
+                        <span>{recipe.difficulty}</span>
+                        <span>{recipe.prepTimeMinutes + recipe.cookTimeMinutes} mins</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
           </div>
-        ))}
-      </div>
+        )}
+      </Droppable>
 
       <div className="pagination">
         {[...Array(totalPages)].map((_, index) => (
